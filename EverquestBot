@@ -1,0 +1,89 @@
+import pyscreenshot as ImageGrab
+import cv2
+import pytesseract
+from PIL import Image
+import time
+from skimage import util 
+import re
+import win32api, win32con
+import keyboard
+import random
+import smtplib, ssl
+from email.message import EmailMessage
+import pyautogui 
+
+pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+
+def click(x,y):
+    win32api.SetCursorPos((x,y))
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,x,y,0,0)
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,x,y,0,0)
+    
+port = 465  # For SSL
+password = "test"
+context = ssl.create_default_context()
+count = 0
+lastnum = 0
+
+while(2>1):
+    numbers = None
+    time.sleep(random.randint(20,30))
+    im = ImageGrab.grab(bbox=(880, 465, 1060, 540))  # X1,Y1,X2,Y2
+    im.save('screenshot.png')
+    img = cv2.imread('screenshot.png')
+    img2 = util.invert(img)
+    img3 = Image.fromarray(img2, 'RGB')
+    im_resized = img3.resize((400, 150))
+    im_resized.save('screenshot.png')
+    text = pytesseract.image_to_string(im_resized)
+    numbers = re.findall(r'\d+',text)
+    if len(numbers) > 0:
+        number = numbers[0]
+        numbersplit=re.sub(r'([0-9])', r'\1,', number).strip(',')
+    
+    print(text)
+    if "AFK" in text:
+        if len(numbers) == 0:
+            print("nonum")
+            pyautogui.mouseDown(x=random.randint(965,967), y=random.randint(570,574)); pyautogui.mouseUp()
+            pyautogui.mouseDown(); pyautogui.mouseUp()
+        else:
+            numberinput = 'enter,/,l,i,s,t,space,a,f,k,space,' + numbersplit
+            print(numberinput)
+            keyboard.press_and_release(numberinput)
+            time.sleep(2)
+            keyboard.press_and_release('enter')
+            time.sleep(2)
+            pyautogui.mouseDown(x=random.randint(965,967), y=random.randint(570,574)); pyautogui.mouseUp()
+            pyautogui.mouseDown(); pyautogui.mouseUp()
+            if lastnum == number:
+                with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+                    server.login("mcnairstester", password)
+                    sender_email = "mcnairstester@gmail.com"
+                    receiver_email = "tmcnairbledsoe@gmail.com"
+                    message = "REPEAT!"
+                    server.sendmail(sender_email, receiver_email, message)
+            lastnum = number
+            
+    if count > 250:    
+        count = 0
+        keyboard.press_and_release('enter,/,l,i,s,t,enter')
+        im = ImageGrab.grab(bbox=(150, 840, 550, 860))  # X1,Y1,X2,Y2
+        im.save('screenshot.png')
+        img = cv2.imread('screenshot.png')
+        img2 = util.invert(img)
+        img3 = Image.fromarray(img2, 'RGB')
+        im_resized = img3.resize((600, 40))
+        im_resized.save('screenshot.png')
+        text = pytesseract.image_to_string(im_resized)
+        numbers = re.findall(r'\d+',text)
+        if len(numbers) > 0:
+            number = numbers[0]
+        
+        with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+            server.login("username", password)
+            sender_email = "test@gmail.com"
+            receiver_email = "test@gmail.com"
+            message = text
+            server.sendmail(sender_email, receiver_email, message)
+    count = count + 1
