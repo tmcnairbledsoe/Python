@@ -1,0 +1,28 @@
+f = open('parser.txt', 'r')
+lines = f.readlines()
+f.close()
+
+
+def find_between( s, first, last ):
+    try:
+        start = s.index( first ) + len( first )
+        end = s.index( last, start )
+        return s[start:end]
+    except ValueError:
+        return ""
+       
+import datetime
+import csv
+
+with open('test.csv', 'w') as csvfile:
+    csvWriter = csv.writer(csvfile, dialect='excel')
+    for i, item in enumerate(lines):
+        if 'DTSTART' in item: 
+            date = find_between(item, 'DTSTART:','T')
+            date = datetime.datetime.strptime(date, '%Y%m%d').strftime('%m/%d/%y')
+        if 'DESCRIPTION' in item: 
+            email = find_between(item, 'DESCRIPTION:','07')
+            number = find_between(item, '.com ','\\n')
+        if 'TRANSP:' in item:
+            RESULTS = [date,email,number]
+            csvWriter.writerow(RESULTS)
