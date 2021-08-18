@@ -58,9 +58,9 @@ while(2>1):
             pyautogui.mouseDown(); pyautogui.mouseUp()
             if lastnum == number:
                 with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
-                    server.login("mcnairstester", password)
-                    sender_email = "mcnairstester@gmail.com"
-                    receiver_email = "tmcnairbledsoe@gmail.com"
+                    server.login("tester", password)
+                    sender_email = "tester@gmail.com"
+                    receiver_email = "recieveremail@gmail.com"
                     message = "REPEAT!"
                     server.sendmail(sender_email, receiver_email, message)
             lastnum = number
