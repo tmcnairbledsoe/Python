@@ -30,3 +30,10 @@ df = pd.DataFrame(data)
 print(df)
 
 driver.quit()
+
+#Install all the needed libraries. Beautiful Soup and Selenium
+#Download geckodriver; https://github.com/mozilla/geckodriver/releases
+#Set it in system variables path; Control Panel > Environmental Variables > System Variables > Path > Edit
+#RESTART BOX
+
+#Line 18 gets whatever you are trying to scrape by XPath. You can get this by inspecting element and then right clickiny > Copy > XPath
